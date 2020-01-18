@@ -1,7 +1,10 @@
-<?php 
+<?php
 if ($_GET['identified'] != true) {
     header('Location: index.php');
     exit();
+} else {
+    session_start();
+    $user_id=$_SESSION['user_id'];
 }
 ?>
 <!DOCTYPE html>
@@ -14,6 +17,6 @@ if ($_GET['identified'] != true) {
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
-    <h1>Bienvenue sur votre page personnelle !</h1>
+    <h1>Bienvenue sur votre page personnelle <?= $user_id ?> !</h1>
 </body>
 </html>

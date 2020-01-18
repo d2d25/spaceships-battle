@@ -1,15 +1,20 @@
-<?php 
+<?php
+session_start();
+if (!empty($_SESSION['user_id'])){
+    header('Location: homepage.php?identified=1');
+    exit();
+}
+
 include_once('../includes/constants.php');
 include_once('../includes/functions.php');
 
 $errors=[];
 $savedContent['user_login']=null;
-$savedContent['user_password']=null;
+$savedContent['login']=null;
 // traitement formulaires si methode POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // traitement form sign up
     if (isset($_POST['sign_up'])) {
-        $userPassword=null;
         $userLogin=null;
         if (!empty($_POST['user_login'])) {
             $userLogin = test_input($_POST['user_login']);
@@ -28,8 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // champ user_password incorrecte
             if (mb_strlen($userPassword) < 7 || mb_strlen($userPassword) > 15) {
                 $errors['user_password'] = 'De 7 à 15 caractères';
-            } else {
-                $savedContent['user_password']=$userPassword;
             }
         } else {
             // champ user_password vide
@@ -47,14 +50,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':name', $userLogin);
             $stmt->bindParam(':value', $passwordHash);
             if ($stmt->execute()) {
+                // redirection page personnelle
+                $_SESSION['user_id']=$login;
                 header('Location: homepage.php?identified=1');
                 exit();
             }
         } 
-
     // traitement form sign in
     } elseif (isset($_POST['sign_in'])) {
-        echo'Sign in';
+        $password=null;
+        $login=null;
+        if (!empty($_POST['login'])) {
+            $login = test_input($_POST['login']);
+            $savedContent['login']=$login;
+        } else {
+            // champ login vide
+            $errors['login'] = 'Saisir votre identifiant';
+        }
+        if (!empty($_POST['password'])) {
+            $password = test_input($_POST['password']);
+            if ($login==null) {
+                $errors['password'] = 'Saisir votre mot de passe';
+            }
+        } else {
+            // champ password vide
+            $errors['password'] = 'Saisir votre mot de passe';
+        }
+        // enregistrement du compte en base
+        if (count($errors) == 0) {
+            // connexion base
+            require_once('../includes/connect_infos.php');
+            require_once('../includes/connect_base.php');
+
+            $stmt = $pdo->prepare("SELECT motPasse FROM joueurs WHERE idJoueur=:login");
+            $stmt->bindParam(':login', $login);
+            if ($stmt->execute()) {
+                $passwordHash=$stmt->fetch(PDO::FETCH_ASSOC)['motPasse'];
+                if (!empty($passwordHash)) {
+                    if (password_verify($password,$passwordHash)) {
+                        // redirection page personnelle
+                        $_SESSION['user_id']=$login;
+                        header('Location: homepage.php?identified=1');
+                        exit();
+                    } else {
+                        $errors['password']='Mot de passe incorrect';
+                    }
+                } else {
+                    $errors['login']='Login incorrect';
+                }
+            } 
+        }
     }
 }
 ?>
@@ -74,21 +119,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h2>Je n'ai pas encore de compte :</h2>
             <form action="" method="POST">
                 <input type="text" name="user_login" placeholder="JeanClaudeDuss" value="<?= !empty($savedContent['user_login']) ? $savedContent['user_login']:''; ?>">
-                <?php if (!empty($errors['user_login'])): ?>
-                    <p><?= $errors['user_login'] ?></p>
-                <?php endif ?>
-                <input type="password" name="user_password" value="<?= !empty($savedContent['user_password']) ? $savedContent['user_password']:''; ?>">
-                <?php if (!empty($errors['user_password'])): ?>
-                    <p><?= $errors['user_password'] ?></p>
-                <?php endif ?>
+                <?= !empty($errors['user_login']) ? '<p>'.$errors['user_login'].'</p>': null; ?>
+                <input type="password" name="user_password">
+                <?= !empty($errors['user_password']) ? '<p>'.$errors['user_password'].'</p>': null; ?>
                 <input type="submit" name="sign_up" value="M'inscrire">
             </form>
         </section>
         <section>
             <h2>A l'attaque !</h2>
             <form action="" method="POST">
-                <input type="text" name="login" placeholder="JeanClaudeDuss">
+                <input type="text" name="login" placeholder="JeanClaudeDuss" value="<?= !empty($savedContent['login']) ? $savedContent['login']:''; ?>">
+                <?= !empty($errors['login']) ? '<p>'.$errors['login'].'</p>': null; ?>
+                <?= !empty($errors['user_not_found']) ? '<p>'.$errors['user_not_found'].'</p>': null; ?>
                 <input type="password" name="password">
+                <?= !empty($errors['password']) ? '<p>'.$errors['password'].'</p>': null; ?>
                 <input type="submit" name="sign_in" value="C'est parti">
             </form>
         </section>
