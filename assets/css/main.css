@@ -2,5 +2,13 @@ body {
     margin: 0;
     padding: 0;
     background-color: lightgrey;
+    display: flex;
+}
 
+nav {
+    flex-basis: 19%;
+}
+
+#container {
+    flex-basis: 80%;
 }

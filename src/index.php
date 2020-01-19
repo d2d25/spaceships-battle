@@ -1,8 +1,11 @@
 <?php
 session_start();
-if (!empty($_SESSION['user_id'])){
+if (!empty($_SESSION['user_id']) && $_GET['session-off']){
+    session_destroy();
+    session_start();
+} elseif (!empty($_SESSION['user_id'])) {
     header('Location: homepage.php?identified=1');
-    exit();
+    exit;
 }
 
 include_once('../includes/constants.php');
@@ -51,9 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':value', $passwordHash);
             if ($stmt->execute()) {
                 // redirection page personnelle
-                $_SESSION['user_id']=$login;
+                $_SESSION['user_id']=$userLogin;
+                // var_dump('ok'); die;
                 header('Location: homepage.php?identified=1');
-                exit();
+                // var_dump('ok1'); die;
+                exit;
             }
         } 
     // traitement form sign in
@@ -91,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         // redirection page personnelle
                         $_SESSION['user_id']=$login;
                         header('Location: homepage.php?identified=1');
-                        exit();
+                        exit;
                     } else {
                         $errors['password']='Mot de passe incorrect';
                     }
