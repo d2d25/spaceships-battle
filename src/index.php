@@ -49,28 +49,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $passwordHash=password_hash($userPassword, PASSWORD_DEFAULT, ['cost' => 12]);
 
-            $stmt = $pdo->prepare("INSERT INTO joueurs (idJoueur, motPasse) VALUES (:name, :value)");
+            $stmt = $pdo->prepare("INSERT INTO joueurs (loginJoueur, motPasse) VALUES (:name, :value)");
             $stmt->bindParam(':name', $userLogin);
             $stmt->bindParam(':value', $passwordHash);
             if ($stmt->execute()) {
-                $_SESSION['user_id']=$userLogin;
+                $_SESSION['user_login']=$userLogin;
 
                 // accès du joueur aux vaisseaux
 
                 // nombre de vaisseaux en bdd
-                $sql='SELECT idVaisseau FROM vaisseaux';
+                $sql='SELECT idVaisseau, nomVaisseau FROM vaisseaux';
                 $stmt = $pdo->query($sql);
                 $stmt->execute();
                 $vaisseaux=$stmt->fetchAll(PDO::FETCH_ASSOC);
-
                 $nbVaisseaux=count($vaisseaux);
+
+                // récupère idJoueur
+                $sql=
+                    'SELECT idJoueur
+                    FROM joueurs
+                    WHERE loginJoueur=:1'
+                    ;
+                $stmt=$pdo->prepare($sql);
+                $stmt->bindParam(':1',$userLogin);
+                $stmt->execute();
+                $result=$stmt->fetch(PDO::FETCH_ASSOC);
+
+                $_SESSION['user_id']=$result['idJoueur'];
+                $idUser=$result['idJoueur'];
 
                 $sql='INSERT INTO joueurs_vaisseaux (idJoueur,idVaisseau) VALUES (:1,:2)';
                 $stmt=$pdo->prepare($sql);
-
                 foreach ($vaisseaux as $vaisseau){
                     $idVaisseau = $vaisseau['idVaisseau'];
-                    $stmt->bindParam(':1',$userLogin);
+                    $stmt->bindParam(':1',$idUser);
                     $stmt->bindParam(':2',$idVaisseau);
                     $stmt->execute();
                 }
@@ -106,14 +118,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             require_once('../includes/connect_infos.php');
             require_once('../includes/connect_base.php');
 
-            $stmt = $pdo->prepare("SELECT motPasse FROM joueurs WHERE idJoueur=:login");
+            $stmt = $pdo->prepare("SELECT motPasse FROM joueurs WHERE loginJoueur=:login");
             $stmt->bindParam(':login', $login);
             if ($stmt->execute()) {
                 $passwordHash=$stmt->fetch(PDO::FETCH_ASSOC)['motPasse'];
                 if (!empty($passwordHash)) {
                     if (password_verify($password,$passwordHash)) {
                         // redirection page personnelle
-                        $_SESSION['user_id']=$login;
+                        $_SESSION['user_login']=$login;
+
+                        // récupère idJoueur
+                        $sql=
+                        'SELECT idJoueur
+                        FROM joueurs
+                        WHERE loginJoueur=:1'
+                        ;
+                        $stmt=$pdo->prepare($sql);
+                        $stmt->bindParam(':1',$login);
+                        $stmt->execute();
+                        $result=$stmt->fetch(PDO::FETCH_ASSOC);
+
+                        $_SESSION['user_id']=$result['idJoueur'];
+
                         header('Location: homepage.php');
                         exit;
                     } else {

@@ -2,11 +2,12 @@
 session_start();
 if (!empty($_SESSION['user_id'])) {
     $user_id=$_SESSION['user_id'];
+    $user_login=$_SESSION['user_login'];
 } else {
     header('Location: index.php');
     exit;
 }
-
+require_once('../includes/functions.php');
 // gestion de l'activite des vaisseaux de USER
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     require_once('../includes/functions.php');
@@ -64,15 +65,15 @@ include_once('../includes/constants.php');
                 <h2>Statistiques de jeu</h2>
                 <?php
                 // statistiques jeu USER
-                $stmt = $pdo->prepare("SELECT argent,niveau,experience,nbPointsReparation FROM joueurs WHERE idJoueur=:user_id");
-                $stmt->bindParam(':user_id', $user_id);
+                $stmt = $pdo->prepare("SELECT argent,niveau,experience,nbPointsReparation FROM joueurs WHERE loginJoueur=:user_id");
+                $stmt->bindParam(':user_id', $user_login);
 
                 $statsJoueur=[];
                 if ($stmt->execute()) {
                     $statsJoueur=$stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
                 ?>
-                <p>Joueur: <?= $user_id ?></p>
+                <p>Joueur: <?= $user_login ?></p>
                 <p>Niveau: <?= $statsJoueur[0]['niveau'] ?></p>
                 <p>Argent: <?= $statsJoueur[0]['argent'] ?></p>
                 <p>Expérience: <?= $statsJoueur[0]['experience'] ?></p>
@@ -92,12 +93,14 @@ include_once('../includes/constants.php');
             <h2>Vaisseaux possédés</h2>
             <?php
             $sql=
-                'SELECT lienImage,joueurs_vaisseaux.idVaisseau,idType,nbVictoires,nbDefaites,dommages,activite
+                'SELECT lienImage,joueurs_vaisseaux.idVaisseau,nomVaisseau,nomType,nbVictoires,nbDefaites,dommages,activite
                 FROM joueurs_vaisseaux
-                LEFT JOIN vaisseaux
-                    ON joueurs_vaisseaux.idVaisseau = vaisseaux.idVaisseau
-                    WHERE idJoueur=:user_id
-                    AND possede=1'
+                inner JOIN vaisseaux
+                ON joueurs_vaisseaux.idVaisseau = vaisseaux.idVaisseau
+                inner JOIN types
+                ON vaisseaux.idType = types.idType
+                WHERE idJoueur=:user_id
+                AND possede=1'
             ;
 
             $stmt = $pdo->prepare($sql);
@@ -121,8 +124,8 @@ include_once('../includes/constants.php');
                 <?php foreach ($vaisseaux as $vaisseau): ?>
                 <tr>
                     <td><img src="<?= $vaisseau['lienImage'] ?>" width="100px"/></td>
-                    <td><?= $vaisseau['idVaisseau'] ?></td>
-                    <td><?= $vaisseau['idType'] ?></td>
+                    <td><?= $vaisseau['nomVaisseau'] ?></td>
+                    <td><?= $vaisseau['nomType'] ?></td>
                     <td><?= $vaisseau['nbVictoires'] ?></td>
                     <td><?= $vaisseau['nbDefaites'] ?></td>
                     <td><?= $vaisseau['dommages'] ?></td>

@@ -13,7 +13,7 @@ require_once('../includes/connect_base.php');
 
 // récupère les vaisseaux fantôme de USER avec tableau des vaisseaux possédés et tableau des vaisseaux non disponibles à l'achat
 $sql=
-    'SELECT jv.idVaisseau,possede,disponibleAchat,niveau,prix,lienImage
+    'SELECT jv.idVaisseau,nomVaisseau,possede,disponibleAchat,niveau,prix,lienImage
     FROM joueurs_vaisseaux as jv
     INNER JOIN vaisseaux as v
     ON jv.idVaisseau=v.idVaisseau
@@ -23,6 +23,7 @@ $stmt=$pdo->prepare($sql);
 $stmt->bindParam(':1',$user_id);
 $stmt->execute();
 $vaisseaux=$stmt->fetchAll(PDO::FETCH_ASSOC);
+// dump('',$vaisseaux);die;
 
 $vaisseauxFantomes=[];
 $vaisseauxPossedes=[];
@@ -144,7 +145,7 @@ include_once('../includes/constants.php');
                 <div id="shop-spaceships">
                 <?php foreach ($vaisseauxFantomes as $vaisseauFantome): ?>
                     <section class="relative">
-                        <h3><?= $vaisseauFantome['idVaisseau'] ?></h3>
+                        <h3><?= $vaisseauFantome['nomVaisseau'] ?></h3>
                     <!-- vaisseau non possédé par USER et disponible à l'achat -->
                     <?php if (!in_array($vaisseauFantome['idVaisseau'],$vaisseauxPossedes) && in_array($vaisseauFantome['idVaisseau'],$vaisseauxDisponibleAchat)): ?>
                         <img src="<?= $vaisseauFantome['lienImage'] ?>" alt="" width="300px">
