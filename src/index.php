@@ -4,7 +4,7 @@ if (!empty($_SESSION['user_id']) && $_GET['session-off']){
     session_destroy();
     session_start();
 } elseif (!empty($_SESSION['user_id'])) {
-    header('Location: homepage.php?identified=1');
+    header('Location: homepage.php');
     exit;
 }
 
@@ -53,11 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':name', $userLogin);
             $stmt->bindParam(':value', $passwordHash);
             if ($stmt->execute()) {
-                // redirection page personnelle
                 $_SESSION['user_id']=$userLogin;
-                // var_dump('ok'); die;
-                header('Location: homepage.php?identified=1');
-                // var_dump('ok1'); die;
+
+                // accès du joueur aux vaisseaux
+
+                // nombre de vaisseaux en bdd
+                $sql='SELECT idVaisseau FROM vaisseaux';
+                $stmt = $pdo->query($sql);
+                $stmt->execute();
+                $vaisseaux=$stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $nbVaisseaux=count($vaisseaux);
+
+                $sql='INSERT INTO joueurs_vaisseaux (idJoueur,idVaisseau) VALUES (:1,:2)';
+                $stmt=$pdo->prepare($sql);
+
+                foreach ($vaisseaux as $vaisseau){
+                    $idVaisseau = $vaisseau['idVaisseau'];
+                    $stmt->bindParam(':1',$userLogin);
+                    $stmt->bindParam(':2',$idVaisseau);
+                    $stmt->execute();
+                }
+
+                // redirection page personnelle
+                header('Location: homepage.php');
                 exit;
             }
         } 
@@ -95,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (password_verify($password,$passwordHash)) {
                         // redirection page personnelle
                         $_SESSION['user_id']=$login;
-                        header('Location: homepage.php?identified=1');
+                        header('Location: homepage.php');
                         exit;
                     } else {
                         $errors['password']='Mot de passe incorrect';

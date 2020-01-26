@@ -1,0 +1,18 @@
+div#shop-spaceships {
+    display: flex;
+    justify-content: space-between;
+}
+
+section.relative {
+    position: relative;
+}
+
+p.absolute {
+    position: absolute;
+    top: 135px;
+    left: 95px;
+    font-size: large;
+    padding: 10px;
+    background-color: lightsalmon;
+    transform : rotate(20deg);
+}

@@ -1,6 +1,6 @@
 <?php
 session_start();
-if ($_GET['identified'] && !empty($_SESSION['user_id'])) {
+if (!empty($_SESSION['user_id'])) {
     $user_id=$_SESSION['user_id'];
 } else {
     header('Location: index.php');
@@ -32,6 +32,7 @@ include_once('../includes/constants.php');
             <section id="stats-user">
                 <h2>Statistiques de jeu</h2>
                 <?php
+                // statistiques jeu USER
                 $stmt = $pdo->prepare("SELECT argent,niveau,experience,nbPointsReparation FROM joueurs WHERE idJoueur=:user_id");
                 $stmt->bindParam(':user_id', $user_id);
 
@@ -59,13 +60,16 @@ include_once('../includes/constants.php');
         <section id="owned-spaceships">
             <h2>Vaisseaux possédés</h2>
             <?php
-            $stmt = $pdo->prepare(
-                "SELECT lienImage,joueurs_vaisseaux.idVaisseau,idType,nbVictoires,nbDefaites,dommages,activite
+            $sql=
+                'SELECT lienImage,joueurs_vaisseaux.idVaisseau,idType,nbVictoires,nbDefaites,dommages,activite
                 FROM joueurs_vaisseaux
                 LEFT JOIN vaisseaux
-                ON joueurs_vaisseaux.idVaisseau = vaisseaux.idVaisseau
-                WHERE idJoueur=:user_id"
-            );
+                    ON joueurs_vaisseaux.idVaisseau = vaisseaux.idVaisseau
+                    WHERE idJoueur=:user_id
+                    AND possede=1'
+            ;
+
+            $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':user_id', $user_id);
 
             $vaisseaux=[];
