@@ -7,6 +7,37 @@ if (!empty($_SESSION['user_id'])) {
     exit;
 }
 
+// gestion de l'activite des vaisseaux de USER
+if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+    require_once('../includes/functions.php');
+    require_once('../includes/connect_infos.php');
+    require_once('../includes/connect_base.php');
+    if (!empty($_POST['activite'])){
+        if (!empty($_POST['statut']) && !empty($_POST['idVaisseau'])){
+            $statut= test_input($_POST['statut']);
+            $idVaisseau=test_input($_POST['idVaisseau']);
+            if ($statut==='actif' || $statut==='inactif'){
+                if ($statut=='actif'){
+                    $statut=1;
+                } else {
+                    $statut=0;
+                }
+                $sql=
+                    'UPDATE joueurs_vaisseaux
+                    SET activite=:1
+                    WHERE idJoueur=:2
+                    AND idVaisseau=:3'
+                ;
+                $stmt=$pdo->prepare($sql);
+                $stmt->bindParam(':1',$statut);
+                $stmt->bindParam(':2',$user_id);
+                $stmt->bindParam(':3',$idVaisseau);
+                $stmt->execute();
+            }
+        }
+    }
+}
+
 include_once('../includes/constants.php');
 ?>
 <!DOCTYPE html>
@@ -95,7 +126,19 @@ include_once('../includes/constants.php');
                     <td><?= $vaisseau['nbVictoires'] ?></td>
                     <td><?= $vaisseau['nbDefaites'] ?></td>
                     <td><?= $vaisseau['dommages'] ?></td>
-                    <td><?= $vaisseau['activite'] ?></td>
+                    <td>
+                        <p><?= $vaisseau['activite']?'Prêt pour le combat':'Vaisseau au repos' ?></p>
+                        <form action="" method="POST">
+                            <?php if ($vaisseau['activite']): ?>
+                            <input type="hidden" name="statut" value="inactif">
+                            <input type="hidden" name="idVaisseau" value="<?=$vaisseau['idVaisseau']?>">
+                            <?php else: ?>
+                            <input type="hidden" name="statut" value="actif">
+                            <input type="hidden" name="idVaisseau" value="<?=$vaisseau['idVaisseau']?>">
+                            <?php endif ?>
+                            <input type="submit" name="activite"  value="modifier">
+                        </form>
+                    </td>
                 </tr>
                 <?php endforeach ?>
             </table>
