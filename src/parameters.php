@@ -12,6 +12,7 @@ require_once('../includes/functions.php');
 require_once('../includes/connect_infos.php');
 require_once('../includes/connect_base.php');
 // traitement méthode POST
+$erreur=[];
 if ($_SERVER['REQUEST_METHOD']=='POST'){
     if (!empty($_POST['submit'])){
         $submit=test_input($_POST['submit']);
@@ -36,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
                     $user_login=$newLogin;
                 } else {
                 // login trop long ou trop court
+                $erreur['longueur']='Le login doit comprendre de 5 à 30 caractères';
                 }
             } else {
             // champ nouveau login vide
@@ -74,6 +76,9 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
                     <input type="text" name="new_login" placeholder="Nouveau login">
                     <button type="submit" name="submit" value="replace_login">Confirmer</button>
                 </form>
+                <?php if(!empty($erreur['longueur'])): ?>
+                <p><?=$erreur['longueur']?></p>
+                <?php endif?>
             </section>
         </section>
     </section>
