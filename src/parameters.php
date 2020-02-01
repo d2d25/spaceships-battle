@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
                 }
             } else {
             // champ nouveau login vide
+            $erreur['champ_vide']='Remplir le champ pour modifier le login';
             }
         }
     }
@@ -78,6 +79,8 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
                 </form>
                 <?php if(!empty($erreur['longueur'])): ?>
                 <p><?=$erreur['longueur']?></p>
+                <?php elseif(!empty($erreur['champ_vide'])): ?>
+                <p><?=$erreur['champ_vide']?></p>
                 <?php endif?>
             </section>
         </section>
