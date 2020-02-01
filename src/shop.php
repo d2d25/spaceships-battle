@@ -164,6 +164,9 @@ include_once('../includes/constants.php');
                     <?php endif ?>
                         <p>Niveau: <?= $vaisseauFantome['niveau'] ?></p>
                         <p>Prix: <?= $vaisseauFantome['prix'] ?></p>
+                        <a href="details.php?id=<?=$vaisseauFantome['idVaisseau']?>">
+                            <button>Détails</button>
+                        </a>
                     </section>
                 <?php endforeach ?>
                 </div>
