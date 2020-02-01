@@ -43,6 +43,30 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
             // champ nouveau login vide
             $erreur['champ_vide']='Remplir le champ pour modifier le login';
             }
+        } // traitement modification login
+        elseif ($submit=="replace_pass"){
+            if (!empty($_POST['new_pass'])){
+                $newPass=test_input($_POST['new_pass']);
+                // nouveau pass entre 7 et 15 caractères
+                if (mb_strlen($newPass) >= 5 && mb_strlen($newPass) <= 30){
+                    $passwordHash=password_hash($newPass, PASSWORD_DEFAULT, ['cost' => 12]);
+
+                    $sql=
+                        'UPDATE joueurs 
+                        SET motPasse=:new_pass
+                        WHERE idJoueur=:id_joueur';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':new_pass', $passwordHash);
+                    $stmt->bindParam(':id_joueur', $user_id);
+                    $stmt->execute();
+                } else {
+                // pass trop long ou trop court
+                $erreur['longueur_pass']='Le mot de passe doit comprendre de 7 à 15 caractères';
+                }
+            } else {
+            // champ nouveau pass vide
+            $erreur['champ_vide_pass']='Remplir le champ pour modifier le mot de passe';
+            }
         }
     }
 }
@@ -81,6 +105,18 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
                 <p><?=$erreur['longueur']?></p>
                 <?php elseif(!empty($erreur['champ_vide'])): ?>
                 <p><?=$erreur['champ_vide']?></p>
+                <?php endif?>
+            </section>
+            <section>
+                <h3>Modifier le mot de passe</h3>
+                <form action="" method="POST">
+                    <input type="text" name="new_pass" placeholder="Nouveau mot de passe">
+                    <button type="submit" name="submit" value="replace_pass">Confirmer</button>
+                </form>
+                <?php if(!empty($erreur['longueur_pass'])): ?>
+                <p><?=$erreur['longueur_pass']?></p>
+                <?php elseif(!empty($erreur['champ_vide_pass'])): ?>
+                <p><?=$erreur['champ_vide_pass']?></p>
                 <?php endif?>
             </section>
         </section>
