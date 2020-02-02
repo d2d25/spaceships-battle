@@ -41,7 +41,7 @@ if (!empty($_GET['id'])) {
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= SITE_NAME ?>: Détails du vaisseau</title>
     <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/homepage.css">
+    <link rel="stylesheet" href="../assets/css/details.css">
 </head>
 <body>
     
@@ -71,7 +71,9 @@ if (!empty($_GET['id'])) {
                     </tbody>
                 </table>
             </section>
-            <img src="<?=$detailsVaisseau->lienImage?>" alt="" width="300px">
+            <div>
+                <img src="<?=$detailsVaisseau->lienImage?>" alt="">
+            </div>
         </div>
         <section>
             <h1>Type du vaisseau</h1>
