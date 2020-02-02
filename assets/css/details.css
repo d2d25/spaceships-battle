@@ -1,0 +1,16 @@
+#details-vaisseau {
+    display: flex;
+}
+
+#details-vaisseau > section, #details-vaisseau > div {
+    flex-basis: 50%;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+}
+
+img {
+    width: 100%;
+}
