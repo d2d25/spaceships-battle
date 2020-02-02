@@ -51,24 +51,32 @@ if (!empty($_GET['id'])) {
     <section id="container">
         <?php if($detailsVaisseau): ?>
         <h1>Détails du vaisseau: <?= $detailsVaisseau->nomVaisseau ?></h1>
+        <div id="details-vaisseau">
+            <section>
+                <h1>Statistiques du vaisseau</h1>
+                <table>
+                    <thead>
+                        <th>Attaque</th>
+                        <th>Défense</th>
+                        <th>Rapidité</th>
+                        <th>Solidité</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?= $detailsVaisseau->attaque ?></td>
+                            <td><?= $detailsVaisseau->defense ?></td>
+                            <td><?= $detailsVaisseau->rapidite ?></td>
+                            <td><?= $detailsVaisseau->solidite ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <img src="<?=$detailsVaisseau->lienImage?>" alt="" width="300px">
+        </div>
         <section>
-            <h1>Statistiques du vaisseau</h1>
-            <table>
-                <thead>
-                    <th>Attaque</th>
-                    <th>Défense</th>
-                    <th>Rapidité</th>
-                    <th>Solidité</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><?= $detailsVaisseau->attaque ?></td>
-                        <td><?= $detailsVaisseau->defense ?></td>
-                        <td><?= $detailsVaisseau->rapidite ?></td>
-                        <td><?= $detailsVaisseau->solidite ?></td>
-                    </tr>
-                </tbody>
-            </table>
+            <h1>Type du vaisseau</h1>
+            <p>Vaisseau de type: <?= $detailsVaisseau->nomType ?></p>
+            <p><?= $detailsVaisseau->detail ?></p>
         </section>
         <?php else: ?>
         <h1>Pas de vaisseau correspondant !</h1>
