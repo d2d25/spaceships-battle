@@ -13,6 +13,21 @@ include_once('../includes/constants.php');
 require_once('../includes/connect_infos.php');
 require_once('../includes/connect_base.php');
 
+$sql=
+    'SELECT idJoueur,loginJoueur,niveau
+    FROM joueurs
+    WHERE idJoueur in (
+        SELECT distinct idJoueur
+        FROM joueurs_vaisseaux
+        where activite=1
+        and idJoueur <> :user_id
+    )'
+;
+$stmt=$pdo->prepare($sql);
+$stmt->bindParam(':user_id',$user_id);
+$stmt->execute();
+$joueursDisponibles=$stmt->fetchAll(PDO::FETCH_OBJ);
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -26,13 +41,22 @@ require_once('../includes/connect_base.php');
 </head>
 <body>
 
-    <?php 
-    require_once('../includes/connect_infos.php');
-    require_once('../includes/connect_base.php');
-    require_once('./templates/_nav.html'); ?>
+    <?php require_once('./templates/_nav.html') ?>
 
     <section id="container">
         <h1>Combats</h1>
+        <section>
+            <h2>Joueurs prêts pour le combat</h2>
+            <div id="available-players">
+            <?php foreach($joueursDisponibles as $joueur):?>
+                <section>
+                    <h2><?=$joueur->loginJoueur?></h2>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fkooledge.com%2Fassets%2Fdefault_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png&f=1&nofb=1" alt="">
+                    <p>Niveau: <?=$joueur->niveau?></p>
+                </section>
+            <?php endforeach?>
+            </div>
+        </section>
     </section>
 </body>
 </html>
