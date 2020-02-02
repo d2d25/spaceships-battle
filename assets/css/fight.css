@@ -1,0 +1,15 @@
+#available-players {
+    display: flex;
+}
+
+#available-players section {
+    flex-basis: 20%;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+img {
+    width: 100px;
+    display: flex;
+    margin:auto;
+}
