@@ -53,6 +53,9 @@ $joueursDisponibles=$stmt->fetchAll(PDO::FETCH_OBJ);
                     <h2><?=$joueur->loginJoueur?></h2>
                     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fkooledge.com%2Fassets%2Fdefault_medium_avatar-57d58da4fc778fbd688dcbc4cbc47e14ac79839a9801187e42a796cbd6569847.png&f=1&nofb=1" alt="">
                     <p>Niveau: <?=$joueur->niveau?></p>
+                    <form action="battleground.php" method="GET">
+                        <button type="submit" name="fight" value="<?=$joueur->idJoueur?>">Affronter</button>
+                    </form>
                 </section>
             <?php endforeach?>
             </div>
