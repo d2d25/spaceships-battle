@@ -80,13 +80,23 @@ include_once('../includes/constants.php');
                 <p>Points de réparation: <?= $statsJoueur[0]['nbPointsReparation'] ?></p>
             </section>
             <section id="new-features">
-                <h2>Nouveautés</h2>
-                <ul>
-                    <li>Achetez votre premier vaisseau dans l'onglet acheter du menu !</li>
-                    <li>Connectez vous 3 jours d'affilés pour débloquer des points de réparation supplémentaires !</li>
-                    <li>Rendre votre nouveau vaisseau disponible pour partir en mission en modifiant son activité !</li>
-                    <li>Réparez votre vaisseau en échange de points de réparation !</li>
-                </ul>
+                <h2>Détail des mises à jours</h2>
+                <section>
+                    <h3>Nouveautés</h3>
+                    <ul>
+                        <li>Shop: Achetez votre premier vaisseau dans l'onglet acheter du menu !</li> 
+                        <li>Accueil: Rendre votre nouveau vaisseau disponible pour partir en mission en modifiant son activité !</li>
+                        <li>Paramètres: Modifiez votre login !</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>A venir</h3>
+                    <ul>
+                        <li>Connectez vous 3 jours d'affilés pour débloquer des points de réparation supplémentaires !</li>
+                        <li>Réparez votre vaisseau en échange de points de réparation !</li>
+                        <li>Choisissez votre faction !</li>
+                    </ul>
+                </section>
             </section>
         </div>
         <section id="owned-spaceships">
