@@ -70,9 +70,6 @@ if (!empty($_GET['fight'])){
     // pas de vaisseaux adverses disponible, erreur
     }
 }
-// dump('vaisseau user',$vaisseauUser);
-// dump('vaisseau adv',$vaisseauAdverse);
-// die;
 ?>
 
 <!DOCTYPE html>
@@ -150,7 +147,7 @@ if (!empty($_GET['fight'])){
                 } else {
                     echo 'C\'est une Victoire !';
                     echo "<p>Le vaisseau ennemi est salement amoché, il repart en boitant... je crois avoir vu le capitaine 
-                    $vaisseauAdverse->nomLogin verser une larme...</p>";
+                    $vaisseauAdverse->loginJoueur verser une larme...</p>";
                 } 
             }
             // attaquer bouclier user
