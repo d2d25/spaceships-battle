@@ -116,7 +116,7 @@ if (!empty($_GET['fight'])){
             $bouclierUser-=$vaisseauAdverse->attaque;
             echo '<p>Le vaisseau ennemi vous a totalement vu arriver ! Il vous a attaqué !</p>';
             if ($bouclierUser>0){
-                echo "<p>Votre défense a pris $vaisseauAdv->attaque points de dégats ($bouclierUser restant(s))";
+                echo "<p>Votre défense a pris $vaisseauAdverse->attaque points de dégats ($bouclierUser restant(s))";
             } else {
                 $defUser=False;
                 echo '<p>Eulah ! Votre bouclier vole en éclats magnétiques ! Vous ne vous sentez plus très bien là...</p>';

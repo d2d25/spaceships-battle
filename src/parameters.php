@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
             if (!empty($_POST['new_pass'])){
                 $newPass=test_input($_POST['new_pass']);
                 // nouveau pass entre 7 et 15 caractères
-                if (mb_strlen($newPass) >= 5 && mb_strlen($newPass) <= 30){
+                if (mb_strlen($newPass) >= 7 && mb_strlen($newPass) <= 15){
                     $passwordHash=password_hash($newPass, PASSWORD_DEFAULT, ['cost' => 12]);
 
                     $sql=
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
             <section>
                 <h3>Modifier le mot de passe</h3>
                 <form action="" method="POST">
-                    <input type="text" name="new_pass" placeholder="Nouveau mot de passe">
+                    <input type="password" name="new_pass" placeholder="Nouveau mot de passe">
                     <button type="submit" name="submit" value="replace_pass">Confirmer</button>
                 </form>
                 <?php if(!empty($erreur['longueur_pass'])): ?>
