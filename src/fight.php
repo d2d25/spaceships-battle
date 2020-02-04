@@ -57,8 +57,10 @@ $joueursDisponibles=$stmt->fetchAll(PDO::FETCH_OBJ);
         <h1>Combats</h1>
         <section>
             <h2>Joueurs prêts pour le combat</h2>
+            <?php if (!$userEstDispo): ?>
             <p>Vous n'avez pas de vaisseau disponible pour le combat !<br>
             Modifiez l'activité d'un vaisseau sur votre page d'accueil pour affronter un joueur !</p>
+            <?php endif ?>
             <div id="available-players">
             <?php foreach($joueursDisponibles as $joueur):?>
                 <section>

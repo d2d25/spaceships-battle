@@ -8,6 +8,7 @@ if (!empty($_SESSION['user_id'])) {
     exit;
 }
 
+include_once('../includes/constants.php');
 require_once('../includes/functions.php');
 require_once('../includes/connect_infos.php');
 require_once('../includes/connect_base.php');
